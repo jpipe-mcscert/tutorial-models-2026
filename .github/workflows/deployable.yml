@@ -1,0 +1,40 @@
+# Chapter 2's example, checked on every pull request: the argument in
+# part_1/chapter_2/deployable.json, confronted with the bindings beside it.
+#
+# The work is done by the jPipe runner's own action, which installs the runner and
+# Graphviz, runs the argument, renders the diagram with each element's verdict on it,
+# and posts that diagram as a comment on the pull request. It fails the job when a check
+# fails, so the answer arrives both as a picture to look at and as a red check.
+#
+# Nothing is compiled here. deployable.json is checked into the repository, so this job
+# needs no compiler, no Java and no Pipfile. The chapter 4 job is the one that compiles,
+# because the .json it runs is not checked in.
+name: Justification (chapter 2)
+
+on:
+  pull_request:
+
+permissions:
+  contents: write # the action commits the rendered diagram to its own branch
+  pull-requests: write # and posts a comment pointing at it
+
+jobs:
+  deployable:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the argument, and draw the verdict
+        uses: jpipe-mcscert/jpipe-runner@v3.5.3
+        with:
+          # The same runner Pipfile.lock pins, so a run here and a run on your machine
+          # are the same runner. The action installs it from git, hence the tag.
+          version: v3.5.3
+          jd_file: part_1/chapter_2/deployable.json
+          library: part_1/chapter_2/deployable.py
+          # The diagram cannot be attached to a comment directly, so the action commits
+          # it to a branch of its own and links it from there. Nothing on main changes.
+          embed_image: "true"
+          image_branch: "diagram-images"
+          github-token: ${{ secrets.GITHUB_TOKEN }}

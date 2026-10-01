@@ -1,0 +1,27 @@
+// Exercise 5.3 - the two operators meet.
+//
+// Do 5.1 and 5.2 first, because this one builds on what they left behind. Nothing here
+// is retyped: `graceful_deep` is loaded from the file you wrote it in.
+//
+// Check your work with:   jpipe diagnostic -i 03_composed.jd
+
+load "02_refine.jd"
+load "../bricks/fair.jd"
+load "../bricks/performant.jd"
+
+// TODO 1. assemble `graceful_deep` together with `fair` and `performant` into
+//         `deployable`, as you did in 5.1, but with the deep brick in place of the
+//         shallow one. Inside the parentheses, ⌃Space offers `graceful_deep` like any
+//         other model: it arrived through a load, exactly as the bricks did.
+//
+//         The order you list them in does not matter. Once it compiles, swap two of
+//         them around and run the diagnostic again: same model. Where `graceful_deep`
+//         argues a claim that `performant` asserts, the merged node keeps the kind that
+//         can carry an argument beneath it, whichever one arrives first.
+
+// TODO 2. this one is not code. Compare the `deployable` you get here with the one from
+//         5.1, node by node, and answer:
+//
+//           - in 5.1, how many nodes were there about the test dataset, and of what kind?
+//           - here, how many are there, of what kind, and what is underneath?
+//           - how many lines of performant.jd did you edit to get that?

@@ -1,0 +1,62 @@
+# Chapter 4, run the way a CI server runs it: confront the argument with the artifacts it
+# claims exist, and post the verdict on the pull request.
+#
+# Nothing is compiled here. part_2/chapter_4/shippable.json is checked into the repository,
+# so this job installs neither the compiler nor the runner: the runner's own action brings
+# the runner, runs it, draws the diagram with each element's verdict on it, and fails the
+# job when a check fails.
+name: Justification (chapter 4)
+
+on:
+  pull_request:
+
+  # The same job, launched by hand, with the world it should run against. On a pull request
+  # none of these are set and the defaults below apply, which is the green run from 4.3.
+  workflow_dispatch:
+    inputs:
+      bar:
+        description: "The bar the strategy applies"
+        default: "0.80"
+      model:
+        description: "The trained model, in mocks/."
+        default: "model.txt"
+      metrics:
+        description: "The measurement report, in mocks/"
+        default: "measurements.json"
+
+permissions:
+  contents: write # the action commits the rendered diagram to its own branch
+  pull-requests: write # and posts a comment pointing at it
+
+jobs:
+  shippable:
+    # Named, not ubuntu-latest, so the job does not change under you when the label moves.
+    runs-on: ubuntu-24.04
+
+    # The two breakages of 4.4, reachable from the Actions tab: raise the bar past what the
+    # model measured, or name a file that is not there. solutions/bindings.py reads these
+    # three and nothing else, and has a default written in for each, which is what the
+    # fallbacks here repeat so that a pull request run sets nothing empty.
+    env:
+      SHIPPABLE_BAR: ${{ inputs.bar || '0.80' }}
+      SHIPPABLE_MODEL: ${{ inputs.model || 'model.txt' }}
+      SHIPPABLE_METRICS: ${{ inputs.metrics || 'measurements.json' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # The finished bindings, not the exercise skeleton, which is unfinished by design and
+      # would fail every pull request. Your own runs stay local until the exercise is done.
+      - name: Check the argument, and draw the verdict
+        uses: jpipe-mcscert/jpipe-runner@v3.5.3
+        with:
+          # The same runner Pipfile.lock pins, so a run here and a run on your machine are
+          # the same runner. The action installs it from git, hence the tag.
+          version: v3.5.3
+          jd_file: part_2/chapter_4/shippable.json
+          library: part_2/chapter_4/solutions/bindings.py
+          # The diagram cannot be attached to a comment directly, so the action commits it
+          # to a branch of its own and links it from there. Nothing on main changes.
+          embed_image: "true"
+          image_branch: "diagram-images"
+          github-token: ${{ secrets.GITHUB_TOKEN }}

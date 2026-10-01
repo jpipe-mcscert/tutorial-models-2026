@@ -1,0 +1,74 @@
+{
+  "elements": [
+    {
+      "escaped": "the_model_is_performant_enough_for_production",
+      "id": "deployable:claim",
+      "label": "The model is performant enough for production",
+      "type": "conclusion"
+    },
+    {
+      "escaped": "confirm_the_report_s_measurements_meet_the_agreed_threshold",
+      "id": "deployable:threshold",
+      "label": "Confirm the report's measurements meet the agreed threshold",
+      "type": "strategy"
+    },
+    {
+      "escaped": "a_performance_threshold_is_agreed_upon_80",
+      "id": "deployable:agreed",
+      "label": "A performance threshold is agreed upon (80%)",
+      "type": "evidence"
+    },
+    {
+      "escaped": "a_performance_report_is_available",
+      "id": "deployable:reporting",
+      "label": "A performance report is available",
+      "type": "sub-conclusion"
+    },
+    {
+      "escaped": "run_the_model_on_the_dataset",
+      "id": "deployable:execution",
+      "label": "Run the model on the dataset",
+      "type": "strategy"
+    },
+    {
+      "escaped": "the_model_is_available",
+      "id": "deployable:model",
+      "label": "The model is available",
+      "type": "evidence"
+    },
+    {
+      "escaped": "the_test_dataset_is_available",
+      "id": "deployable:test_ds",
+      "label": "The test dataset is available",
+      "type": "evidence"
+    }
+  ],
+  "name": "deployable",
+  "type": "justification",
+  "relations": [
+    {
+      "source": "deployable:threshold",
+      "target": "deployable:claim"
+    },
+    {
+      "source": "deployable:execution",
+      "target": "deployable:reporting"
+    },
+    {
+      "source": "deployable:reporting",
+      "target": "deployable:threshold"
+    },
+    {
+      "source": "deployable:agreed",
+      "target": "deployable:threshold"
+    },
+    {
+      "source": "deployable:model",
+      "target": "deployable:execution"
+    },
+    {
+      "source": "deployable:test_ds",
+      "target": "deployable:execution"
+    }
+  ]
+}
